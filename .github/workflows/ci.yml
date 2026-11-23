@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-and-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: python -m pip install --upgrade pip poetry
+
+      - name: Configure Poetry and install dependencies
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction
+
+      - name: Run Ruff linter
+        run: poetry run ruff check src tests
+
+      - name: Verify Black formatting
+        run: poetry run black --check src tests
+
+      - name: Run strict Mypy type checks
+        run: poetry run mypy src tests
+
+      - name: Run pytest with branch coverage
+        run: poetry run pytest --cov=src/mythos_graph --cov-branch --cov-report=term-missing
