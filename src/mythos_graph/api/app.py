@@ -1,9 +1,10 @@
 """FastAPI application exposing the MythosGraph prototype endpoints."""
 
+from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response, status
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 
 from mythos_graph import __version__
 from mythos_graph.api.schemas import GraphStatsResponse, HealthResponse
@@ -144,6 +145,10 @@ def _register_query_routes(application: FastAPI, graph: MythosGraph) -> None:
         subgraph = _subgraph_for_export(graph, cycle)
         label = cycle.value if cycle is not None else "MythosGraph"
         return to_jgf(subgraph.entities, subgraph.relationships, label=label)
+
+    @application.get("/", include_in_schema=False)
+    def web_ui() -> FileResponse:
+        return FileResponse(Path(__file__).with_name("static") / "index.html")
 
     @application.get("/export/dot", response_class=PlainTextResponse, tags=["export"])
     def export_dot(cycle: MythologicalCycle | None = None) -> PlainTextResponse:

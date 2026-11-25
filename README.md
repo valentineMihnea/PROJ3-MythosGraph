@@ -20,7 +20,8 @@ The API loads a seed dataset of 20 Greek mythological figures and 31 relationshi
 poetry run uvicorn mythos_graph.api.app:app --reload
 ```
 
-Interactive OpenAPI docs are available at `http://127.0.0.1:8000/docs`.
+- **Web Interface (SVG Graph Explorer):** `http://127.0.0.1:8000/`
+- **Interactive OpenAPI Docs (Swagger UI):** `http://127.0.0.1:8000/docs`
 
 ### Example Queries
 

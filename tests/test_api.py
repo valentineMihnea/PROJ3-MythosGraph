@@ -10,8 +10,13 @@ def _client() -> TestClient:
 
 
 def test_health_and_stats() -> None:
-    """Health and stats endpoints reflect the preloaded Hellenic seed dataset."""
+    """Web UI, health, and stats endpoints reflect the preloaded Hellenic seed dataset."""
     client = _client()
+
+    ui = client.get("/")
+    assert ui.status_code == 200
+    assert "text/html" in ui.headers["content-type"]
+    assert "MythosGraph" in ui.text
 
     health = client.get("/health")
     assert health.status_code == 200
