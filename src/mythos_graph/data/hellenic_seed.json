@@ -1,0 +1,217 @@
+{
+  "entities": [
+    {
+      "id": "gaia",
+      "greek_name": "Γαῖα",
+      "anglicized_name": "Gaia",
+      "category": "PRIMORDIAL",
+      "attributes": {"domain": "earth"},
+      "attestations": ["Hesiod, Theogony 116-132"],
+      "cycles": ["TITANOMACHY", "GENERAL"]
+    },
+    {
+      "id": "uranus",
+      "greek_name": "Οὐρανός",
+      "anglicized_name": "Uranus",
+      "category": "PRIMORDIAL",
+      "attributes": {"domain": "sky"},
+      "attestations": ["Hesiod, Theogony 126-138"],
+      "cycles": ["TITANOMACHY", "GENERAL"]
+    },
+    {
+      "id": "cronus",
+      "greek_name": "Κρόνος",
+      "anglicized_name": "Cronus",
+      "category": "TITAN",
+      "attributes": {"role": "king of the titans"},
+      "attestations": ["Hesiod, Theogony 137"],
+      "cycles": ["TITANOMACHY"]
+    },
+    {
+      "id": "rhea",
+      "greek_name": "Ῥέα",
+      "anglicized_name": "Rhea",
+      "category": "TITAN",
+      "attributes": {"role": "mother of the olympians"},
+      "attestations": ["Hesiod, Theogony 453-458"],
+      "cycles": ["TITANOMACHY"]
+    },
+    {
+      "id": "zeus",
+      "greek_name": "Ζεύς",
+      "anglicized_name": "Zeus",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "sky, thunder", "symbol": "thunderbolt"},
+      "attestations": ["Hesiod, Theogony 457", "Homer, Iliad"],
+      "cycles": ["TITANOMACHY", "TROJAN_WAR", "GENERAL"]
+    },
+    {
+      "id": "hera",
+      "greek_name": "Ἥρα",
+      "anglicized_name": "Hera",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "marriage, queenship"},
+      "attestations": ["Hesiod, Theogony 454", "Homer, Iliad"],
+      "cycles": ["TITANOMACHY", "TROJAN_WAR", "ARGONAUTIC_EXPEDITION"]
+    },
+    {
+      "id": "poseidon",
+      "greek_name": "Ποσειδῶν",
+      "anglicized_name": "Poseidon",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "sea, earthquakes"},
+      "attestations": ["Hesiod, Theogony 456", "Homer, Odyssey"],
+      "cycles": ["TITANOMACHY", "TROJAN_WAR", "GENERAL"]
+    },
+    {
+      "id": "hades",
+      "greek_name": "Ἅιδης",
+      "anglicized_name": "Hades",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "underworld"},
+      "attestations": ["Hesiod, Theogony 455"],
+      "cycles": ["TITANOMACHY", "GENERAL"]
+    },
+    {
+      "id": "athena",
+      "greek_name": "Ἀθηνᾶ",
+      "anglicized_name": "Athena",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "wisdom, strategy"},
+      "attestations": ["Hesiod, Theogony 886-900", "Homer, Odyssey"],
+      "cycles": ["TROJAN_WAR", "ARGONAUTIC_EXPEDITION", "GENERAL"]
+    },
+    {
+      "id": "apollo",
+      "greek_name": "Ἀπόλλων",
+      "anglicized_name": "Apollo",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "prophecy, music, archery"},
+      "attestations": ["Homeric Hymn to Apollo"],
+      "cycles": ["TROJAN_WAR", "GENERAL"]
+    },
+    {
+      "id": "persephone",
+      "greek_name": "Περσεφόνη",
+      "anglicized_name": "Persephone",
+      "category": "OLYMPIAN",
+      "attributes": {"domain": "underworld, spring"},
+      "attestations": ["Homeric Hymn to Demeter"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "heracles",
+      "greek_name": "Ἡρακλῆς",
+      "anglicized_name": "Heracles",
+      "category": "DEMIGOD",
+      "attributes": {"epithet": "hero of the twelve labors"},
+      "attestations": ["Pseudo-Apollodorus, Bibliotheca 2.4.8"],
+      "cycles": ["ARGONAUTIC_EXPEDITION", "GENERAL"]
+    },
+    {
+      "id": "minos",
+      "greek_name": "Μίνως",
+      "anglicized_name": "Minos",
+      "category": "MORTAL",
+      "attributes": {"role": "king of Crete"},
+      "attestations": ["Homer, Odyssey 11.568", "Pseudo-Apollodorus, Bibliotheca 3.1.1"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "perseus",
+      "greek_name": "Περσεύς",
+      "anglicized_name": "Perseus",
+      "category": "DEMIGOD",
+      "attributes": {"epithet": "slayer of Medusa"},
+      "attestations": ["Pseudo-Apollodorus, Bibliotheca 2.4.1"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "medusa",
+      "greek_name": "Μέδουσα",
+      "anglicized_name": "Medusa",
+      "category": "CREATURE",
+      "attributes": {"species": "Gorgon"},
+      "attestations": ["Hesiod, Theogony 276"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "theseus",
+      "greek_name": "Θησεύς",
+      "anglicized_name": "Theseus",
+      "category": "DEMIGOD",
+      "attributes": {"role": "king of Athens"},
+      "attestations": ["Plutarch, Life of Theseus"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "minotaur",
+      "greek_name": "Μινώταυρος",
+      "anglicized_name": "Minotaur",
+      "category": "CREATURE",
+      "attributes": {"lair": "Labyrinth of Knossos"},
+      "attestations": ["Pseudo-Apollodorus, Bibliotheca 3.1.4"],
+      "cycles": ["GENERAL"]
+    },
+    {
+      "id": "achilles",
+      "greek_name": "Ἀχιλλεύς",
+      "anglicized_name": "Achilles",
+      "category": "DEMIGOD",
+      "attributes": {"role": "champion of the Achaeans"},
+      "attestations": ["Homer, Iliad 1.1"],
+      "cycles": ["TROJAN_WAR"]
+    },
+    {
+      "id": "odysseus",
+      "greek_name": "Ὀδυσσεύς",
+      "anglicized_name": "Odysseus",
+      "category": "MORTAL",
+      "attributes": {"role": "king of Ithaca"},
+      "attestations": ["Homer, Iliad", "Homer, Odyssey"],
+      "cycles": ["TROJAN_WAR"]
+    },
+    {
+      "id": "jason",
+      "greek_name": "Ἰάσων",
+      "anglicized_name": "Jason",
+      "category": "MORTAL",
+      "attributes": {"role": "leader of the Argonauts"},
+      "attestations": ["Apollonius of Rhodes, Argonautica"],
+      "cycles": ["ARGONAUTIC_EXPEDITION"]
+    }
+  ],
+  "relationships": [
+    {"source_id": "gaia", "target_id": "uranus", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY", "GENERAL"]},
+    {"source_id": "gaia", "target_id": "uranus", "relation_type": "CONSORT_OF", "cycles": ["TITANOMACHY", "GENERAL"]},
+    {"source_id": "gaia", "target_id": "cronus", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "uranus", "target_id": "cronus", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "gaia", "target_id": "rhea", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "uranus", "target_id": "rhea", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "cronus", "target_id": "rhea", "relation_type": "SPOUSE_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "cronus", "target_id": "zeus", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "rhea", "target_id": "zeus", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "cronus", "target_id": "hera", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "cronus", "target_id": "poseidon", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "cronus", "target_id": "hades", "relation_type": "PARENT_OF", "cycles": ["TITANOMACHY"]},
+    {"source_id": "zeus", "target_id": "hera", "relation_type": "SPOUSE_OF", "cycles": ["TROJAN_WAR", "GENERAL"]},
+    {"source_id": "zeus", "target_id": "poseidon", "relation_type": "SIBLING_OF", "cycles": ["TITANOMACHY", "GENERAL"]},
+    {"source_id": "zeus", "target_id": "hades", "relation_type": "SIBLING_OF", "cycles": ["TITANOMACHY", "GENERAL"]},
+    {"source_id": "zeus", "target_id": "athena", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "zeus", "target_id": "apollo", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "zeus", "target_id": "persephone", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "hades", "target_id": "persephone", "relation_type": "SPOUSE_OF", "cycles": ["GENERAL"]},
+    {"source_id": "zeus", "target_id": "heracles", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "zeus", "target_id": "minos", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "zeus", "target_id": "perseus", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "poseidon", "target_id": "theseus", "relation_type": "PARENT_OF", "cycles": ["GENERAL"]},
+    {"source_id": "athena", "target_id": "heracles", "relation_type": "PATRON_OF", "cycles": ["GENERAL"]},
+    {"source_id": "athena", "target_id": "perseus", "relation_type": "PATRON_OF", "cycles": ["GENERAL"]},
+    {"source_id": "athena", "target_id": "odysseus", "relation_type": "PATRON_OF", "cycles": ["TROJAN_WAR"]},
+    {"source_id": "hera", "target_id": "jason", "relation_type": "PATRON_OF", "cycles": ["ARGONAUTIC_EXPEDITION"]},
+    {"source_id": "perseus", "target_id": "medusa", "relation_type": "SLAYER_OF", "cycles": ["GENERAL"]},
+    {"source_id": "theseus", "target_id": "minotaur", "relation_type": "SLAYER_OF", "cycles": ["GENERAL"]},
+    {"source_id": "achilles", "target_id": "odysseus", "relation_type": "ALLIED_WITH", "cycles": ["TROJAN_WAR"]},
+    {"source_id": "heracles", "target_id": "jason", "relation_type": "ALLIED_WITH", "cycles": ["ARGONAUTIC_EXPEDITION"]}
+  ]
+}

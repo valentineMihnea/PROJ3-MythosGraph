@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MythosGraph</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f5f7;
+      color: #1f2937;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #d8dde6;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .stats {
+      color: #52606d;
+      font-size: 13px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-actions a {
+      color: #2c5282;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .header-actions a:hover { text-decoration: underline; }
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 16px;
+      padding: 16px 20px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: #ffffff;
+      border: 1px solid #d8dde6;
+      border-radius: 6px;
+      padding: 14px;
+    }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    h2 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 3px;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #cbd2d9;
+      border-radius: 4px;
+      font-size: 13px;
+      background: #ffffff;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .checkbox-row input { margin: 0; }
+    button {
+      background: #2c5282;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover { background: #1e3a5f; }
+    button.secondary {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+    button.secondary:hover { background: #d1d5db; }
+    button.danger {
+      background: #b91c1c;
+      color: #ffffff;
+    }
+    button.danger:hover { background: #991b1b; }
+    .full-width { width: 100%; }
+    .main-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+    .graph-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid #475569;
+      display: inline-block;
+    }
+    #graph-svg {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      background: #fafbfc;
+      display: block;
+    }
+    .node-group { cursor: pointer; }
+    .node-label {
+      font-size: 11px;
+      font-weight: 600;
+      fill: #1f2937;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .edge-label {
+      font-size: 9px;
+      fill: #64748b;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .edge-label.highlighted {
+      fill: #9a3412;
+      font-weight: 600;
+    }
+    .status-msg {
+      font-size: 13px;
+      color: #374151;
+    }
+    .error-msg {
+      font-size: 13px;
+      color: #b91c1c;
+    }
+    .path-steps {
+      margin: 8px 0 0 0;
+      padding-left: 18px;
+    }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: #1f2937;
+    }
+    details[open] summary { margin-bottom: 10px; }
+    pre.export-preview {
+      margin: 8px 0 0 0;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 12px;
+      overflow-x: auto;
+      max-height: 180px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>MythosGraph</h1>
+      <span class="stats" id="stats-label">Loading...</span>
+    </div>
+    <div class="header-actions">
+      <button class="secondary" id="reset-btn" type="button">Show Full Graph</button>
+      <a href="/docs" target="_blank" rel="noopener">API Docs (Swagger)</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>Kinship Path</h2>
+        <label for="path-source">From</label>
+        <select id="path-source"></select>
+        <label for="path-target">To</label>
+        <select id="path-target"></select>
+        <div class="row">
+          <div>
+            <label for="path-algo">Algorithm</label>
+            <select id="path-algo">
+              <option value="bfs">BFS (min hops)</option>
+              <option value="dijkstra">Dijkstra (weighted)</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:6px;">
+            <label class="checkbox-row" style="margin:0;">
+              <input type="checkbox" id="path-bidirectional" checked />
+              Bidirectional
+            </label>
+          </div>
+        </div>
+        <button class="full-width" id="find-path-btn" type="button">Find Path</button>
+      </section>
+
+      <section class="panel">
+        <h2>Lineage &amp; Cycles</h2>
+        <label for="lineage-entity">Entity</label>
+        <select id="lineage-entity"></select>
+        <div class="row">
+          <div>
+            <label for="lineage-dir">Direction</label>
+            <select id="lineage-dir">
+              <option value="both">Both</option>
+              <option value="ancestors">Ancestors</option>
+              <option value="descendants">Descendants</option>
+            </select>
+          </div>
+          <div>
+            <label for="lineage-depth">Depth</label>
+            <input type="number" id="lineage-depth" min="0" max="6" value="2" />
+          </div>
+        </div>
+        <button class="full-width secondary" id="lineage-btn" type="button" style="margin-bottom:10px;">
+          Extract Lineage
+        </button>
+
+        <label for="cycle-select">Mythological Cycle</label>
+        <select id="cycle-select">
+          <option value="TITANOMACHY">TITANOMACHY</option>
+          <option value="TROJAN_WAR">TROJAN_WAR</option>
+          <option value="ARGONAUTIC_EXPEDITION">ARGONAUTIC_EXPEDITION</option>
+          <option value="SEVEN_AGAINST_THEBES">SEVEN_AGAINST_THEBES</option>
+          <option value="GENERAL">GENERAL</option>
+        </select>
+        <button class="full-width secondary" id="cycle-btn" type="button">Filter by Cycle</button>
+      </section>
+
+      <section class="panel">
+        <details>
+          <summary>Add Entity</summary>
+          <label for="new-id">ID</label>
+          <input type="text" id="new-id" placeholder="e.g. orpheus" />
+          <label for="new-greek">Greek Name</label>
+          <input type="text" id="new-greek" placeholder="e.g. Ὀρφεύς" />
+          <label for="new-name">Anglicized Name</label>
+          <input type="text" id="new-name" placeholder="e.g. Orpheus" />
+          <label for="new-cat">Category</label>
+          <select id="new-cat">
+            <option value="PRIMORDIAL">PRIMORDIAL</option>
+            <option value="TITAN">TITAN</option>
+            <option value="OLYMPIAN">OLYMPIAN</option>
+            <option value="DEMIGOD">DEMIGOD</option>
+            <option value="MORTAL" selected>MORTAL</option>
+            <option value="CREATURE">CREATURE</option>
+          </select>
+          <button class="full-width" id="add-entity-btn" type="button">Create Entity</button>
+        </details>
+      </section>
+
+      <section class="panel">
+        <details>
+          <summary>Add Relationship</summary>
+          <label for="rel-src">Source</label>
+          <select id="rel-src"></select>
+          <label for="rel-dst">Target</label>
+          <select id="rel-dst"></select>
+          <label for="rel-type">Type</label>
+          <select id="rel-type">
+            <option value="PARENT_OF">PARENT_OF</option>
+            <option value="CHILD_OF">CHILD_OF</option>
+            <option value="SPOUSE_OF">SPOUSE_OF</option>
+            <option value="CONSORT_OF">CONSORT_OF</option>
+            <option value="SIBLING_OF">SIBLING_OF</option>
+            <option value="SLAYER_OF">SLAYER_OF</option>
+            <option value="PATRON_OF">PATRON_OF</option>
+            <option value="ALLIED_WITH">ALLIED_WITH</option>
+          </select>
+          <button class="full-width" id="add-rel-btn" type="button">Create Relationship</button>
+        </details>
+      </section>
+    </aside>
+
+    <section class="main-col">
+      <div class="panel">
+        <div class="graph-toolbar">
+          <div class="legend">
+            <span class="legend-item"><span class="dot" style="background:#e2e8f0"></span>Primordial</span>
+            <span class="legend-item"><span class="dot" style="background:#fde68a"></span>Titan</span>
+            <span class="legend-item"><span class="dot" style="background:#bfdbfe"></span>Olympian</span>
+            <span class="legend-item"><span class="dot" style="background:#bbf7d0"></span>Demigod</span>
+            <span class="legend-item"><span class="dot" style="background:#e5e7eb"></span>Mortal</span>
+            <span class="legend-item"><span class="dot" style="background:#fecaca"></span>Creature</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="secondary" id="export-dot-btn" type="button">View DOT</button>
+            <button class="secondary" id="export-jgf-btn" type="button">View JGF</button>
+          </div>
+        </div>
+        <svg id="graph-svg" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+
+      <div class="panel" id="output-panel">
+        <h2>Details</h2>
+        <div class="status-msg" id="output-content">
+          Select a node in the graph or run a query on the left.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const CATEGORY_COLORS = {
+      PRIMORDIAL: "#e2e8f0",
+      TITAN: "#fde68a",
+      OLYMPIAN: "#bfdbfe",
+      DEMIGOD: "#bbf7d0",
+      MORTAL: "#e5e7eb",
+      CREATURE: "#fecaca",
+    };
+
+    const CATEGORY_ROW = {
+      PRIMORDIAL: 0,
+      TITAN: 1,
+      OLYMPIAN: 2,
+      DEMIGOD: 3,
+      MORTAL: 4,
+      CREATURE: 4,
+    };
+
+    let allEntities = [];
+    let currentView = { entities: [], relationships: [], highlightNodes: new Set(), highlightEdges: new Set() };
+    let currentCycleFilter = null;
+
+    async function apiFetch(url, options = {}) {
+      const res = await fetch(url, options);
+      const isJson = (res.headers.get("content-type") || "").includes("application/json");
+      const body = isJson ? await res.json() : await res.text();
+      if (!res.ok) {
+        const msg = typeof body === "object" && body.detail ? body.detail : String(body);
+        throw new Error(msg);
+      }
+      return body;
+    }
+
+    function setOutput(html, isError = false) {
+      const el = document.getElementById("output-content");
+      el.className = isError ? "error-msg" : "status-msg";
+      el.innerHTML = html;
+    }
+
+    function populateSelects(entities) {
+      const sorted = [...entities].sort((a, b) => a.anglicized_name.localeCompare(b.anglicized_name));
+      const ids = ["path-source", "path-target", "lineage-entity", "rel-src", "rel-dst"];
+      for (const selectId of ids) {
+        const select = document.getElementById(selectId);
+        const prev = select.value;
+        select.innerHTML = "";
+        for (const e of sorted) {
+          const opt = document.createElement("option");
+          opt.value = e.id;
+          opt.textContent = `${e.anglicized_name} (${e.category.toLowerCase()})`;
+          select.appendChild(opt);
+        }
+        if (prev && sorted.some(e => e.id === prev)) {
+          select.value = prev;
+        }
+      }
+      if (!document.getElementById("path-source").dataset.initialized) {
+        if (sorted.some(e => e.id === "heracles")) document.getElementById("path-source").value = "heracles";
+        if (sorted.some(e => e.id === "minos")) document.getElementById("path-target").value = "minos";
+        if (sorted.some(e => e.id === "zeus")) document.getElementById("lineage-entity").value = "zeus";
+        document.getElementById("path-source").dataset.initialized = "1";
+      }
+    }
+
+    function edgeKey(rel) {
+      return `${rel.source_id}|${rel.target_id}|${rel.relation_type}`;
+    }
+
+    function computePositions(entities) {
+      const rows = [[], [], [], [], []];
+      for (const e of entities) {
+        const r = CATEGORY_ROW[e.category] ?? 4;
+        rows[r].push(e);
+      }
+      const activeRows = rows.map((list, idx) => ({ idx, list })).filter(r => r.list.length > 0);
+      const width = 960;
+      const height = 500;
+      const topPad = 56;
+      const rowStep = activeRows.length > 1 ? (height - 2 * topPad) / (activeRows.length - 1) : 0;
+
+      const pos = new Map();
+      activeRows.forEach((rowObj, rowPosIdx) => {
+        const y = activeRows.length === 1 ? height / 2 : topPad + rowPosIdx * rowStep;
+        const count = rowObj.list.length;
+        const margin = 75;
+        const usable = width - 2 * margin;
+        rowObj.list.forEach((entity, i) => {
+          const x = count === 1 ? width / 2 : margin + (i * usable) / (count - 1);
+          pos.set(entity.id, { x, y });
+        });
+      });
+      return pos;
+    }
+
+    function renderGraph() {
+      const svg = document.getElementById("graph-svg");
+      svg.innerHTML = "";
+
+      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      defs.innerHTML = `
+        <marker id="arrow" viewBox="0 0 10 10" refX="26" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8" />
+        </marker>
+        <marker id="arrow-hi" viewBox="0 0 10 10" refX="26" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#b45309" />
+        </marker>
+      `;
+      svg.appendChild(defs);
+
+      const { entities, relationships, highlightNodes, highlightEdges } = currentView;
+      const positions = computePositions(entities);
+
+      const pairCount = new Map();
+      for (const rel of relationships) {
+        const pair = [rel.source_id, rel.target_id].sort().join("|");
+        pairCount.set(pair, (pairCount.get(pair) || 0) + 1);
+      }
+      const pairSeen = new Map();
+
+      for (const rel of relationships) {
+        const p1 = positions.get(rel.source_id);
+        const p2 = positions.get(rel.target_id);
+        if (!p1 || !p2) continue;
+
+        const isHi = highlightEdges.has(edgeKey(rel));
+        const pair = [rel.source_id, rel.target_id].sort().join("|");
+        const total = pairCount.get(pair) || 1;
+        const seen = pairSeen.get(pair) || 0;
+        pairSeen.set(pair, seen + 1);
+
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const nx = -dy / len;
+        const ny = dx / len;
+        const curveOffset = total > 1 ? (seen - (total - 1) / 2) * 28 : 14;
+        const cx = (p1.x + p2.x) / 2 + nx * curveOffset;
+        const cy = (p1.y + p2.y) / 2 + ny * curveOffset;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", isHi ? "#b45309" : "#94a3b8");
+        path.setAttribute("stroke-width", isHi ? "2.4" : "1.2");
+        path.setAttribute("stroke-opacity", highlightEdges.size > 0 && !isHi ? "0.3" : "0.85");
+        path.setAttribute("marker-end", isHi ? "url(#arrow-hi)" : "url(#arrow)");
+        svg.appendChild(path);
+
+        if (relationships.length <= 20 || isHi) {
+          const lx = 0.25 * p1.x + 0.5 * cx + 0.25 * p2.x;
+          const ly = 0.25 * p1.y + 0.5 * cy + 0.25 * p2.y;
+          const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          lbl.setAttribute("x", lx);
+          lbl.setAttribute("y", ly);
+          lbl.setAttribute("class", isHi ? "edge-label highlighted" : "edge-label");
+          lbl.textContent = rel.relation_type;
+          svg.appendChild(lbl);
+        }
+      }
+
+      for (const entity of entities) {
+        const p = positions.get(entity.id);
+        if (!p) continue;
+        const isHi = highlightNodes.has(entity.id);
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("class", "node-group");
+        g.addEventListener("click", () => showEntityDetails(entity));
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", p.x);
+        circle.setAttribute("cy", p.y);
+        circle.setAttribute("r", 20);
+        circle.setAttribute("fill", CATEGORY_COLORS[entity.category] || "#e5e7eb");
+        circle.setAttribute("stroke", isHi ? "#b45309" : "#475569");
+        circle.setAttribute("stroke-width", isHi ? "3" : "1.4");
+        g.appendChild(circle);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", p.x);
+        text.setAttribute("y", p.y + 32);
+        text.setAttribute("class", "node-label");
+        text.textContent = entity.anglicized_name;
+        g.appendChild(text);
+
+        svg.appendChild(g);
+      }
+    }
+
+    function showEntityDetails(entity) {
+      const attrs = Object.entries(entity.attributes || {})
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(", ") || "none";
+      const attestations = (entity.attestations || []).join("; ") || "none";
+      const cycles = (entity.cycles || []).join(", ") || "none";
+
+      setOutput(`
+        <div>
+          <strong>${entity.anglicized_name}</strong> (${entity.greek_name}) — <code>${entity.category}</code>
+        </div>
+        <div class="details-grid">
+          <div><strong>ID:</strong> <code>${entity.id}</code></div>
+          <div><strong>Attributes:</strong> ${attrs}</div>
+          <div><strong>Cycles:</strong> ${cycles}</div>
+          <div><strong>Attestations:</strong> ${attestations}</div>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="danger" type="button" onclick="deleteEntity('${entity.id}')">Delete Entity</button>
+        </div>
+      `);
+    }
+
+    async function deleteEntity(entityId) {
+      try {
+        await apiFetch(`/entities/${encodeURIComponent(entityId)}`, { method: "DELETE" });
+        setOutput(`Deleted entity <code>${entityId}</code>.`);
+        await loadFullGraph();
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    }
+
+    async function loadFullGraph() {
+      currentCycleFilter = null;
+      const [stats, jgf] = await Promise.all([
+        apiFetch("/stats"),
+        apiFetch("/export/jgf"),
+      ]);
+      document.getElementById("stats-label").textContent =
+        `${stats.node_count} entities · ${stats.edge_count} relationships`;
+
+      allEntities = await apiFetch("/entities");
+      populateSelects(allEntities);
+
+      const entitiesById = new Map(allEntities.map(e => [e.id, e]));
+      const relationships = jgf.graph.edges.map(edge => ({
+        source_id: edge.source,
+        target_id: edge.target,
+        relation_type: edge.relation,
+      }));
+      currentView = {
+        entities: Array.from(entitiesById.values()),
+        relationships,
+        highlightNodes: new Set(),
+        highlightEdges: new Set(),
+      };
+      renderGraph();
+    }
+
+    document.getElementById("reset-btn").addEventListener("click", async () => {
+      await loadFullGraph();
+      setOutput("Showing full graph.");
+    });
+
+    document.getElementById("find-path-btn").addEventListener("click", async () => {
+      const sourceId = document.getElementById("path-source").value;
+      const targetId = document.getElementById("path-target").value;
+      const algorithm = document.getElementById("path-algo").value;
+      const bidirectional = document.getElementById("path-bidirectional").checked;
+
+      try {
+        const params = new URLSearchParams({
+          source_id: sourceId,
+          target_id: targetId,
+          algorithm,
+          bidirectional: String(bidirectional),
+        });
+        const path = await apiFetch(`/kinship/path?${params.toString()}`);
+
+        const hiNodes = new Set([path.source_id, path.target_id]);
+        const hiEdges = new Set();
+        const pathRels = [];
+        for (const step of path.steps) {
+          hiNodes.add(step.from_id);
+          hiNodes.add(step.to_id);
+          hiEdges.add(edgeKey(step.relationship));
+          pathRels.push(step.relationship);
+        }
+
+        const subEntities = allEntities.filter(e => hiNodes.has(e.id));
+        currentView = {
+          entities: subEntities,
+          relationships: pathRels,
+          highlightNodes: hiNodes,
+          highlightEdges: hiEdges,
+        };
+        renderGraph();
+
+        if (path.hops === 0) {
+          setOutput(`<code>${sourceId}</code> to itself (0 hops).`);
+          return;
+        }
+        const stepsHtml = path.steps
+          .map(s => `<li><code>${s.from_id}</code> &rarr; <code>${s.to_id}</code> via <strong>${s.relationship.relation_type}</strong> (${s.direction})</li>`)
+          .join("");
+        setOutput(
+          `<strong>Path found (${path.hops} hops, weight ${path.total_weight}):</strong><ol class="path-steps">${stepsHtml}</ol>`
+        );
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    });
+
+    document.getElementById("lineage-btn").addEventListener("click", async () => {
+      const entityId = document.getElementById("lineage-entity").value;
+      const direction = document.getElementById("lineage-dir").value;
+      const depth = document.getElementById("lineage-depth").value;
+      try {
+        const params = new URLSearchParams({ direction, depth });
+        const sub = await apiFetch(`/entities/${encodeURIComponent(entityId)}/lineage?${params.toString()}`);
+        currentCycleFilter = null;
+        currentView = {
+          entities: sub.entities,
+          relationships: sub.relationships,
+          highlightNodes: new Set([entityId]),
+          highlightEdges: new Set(),
+        };
+        renderGraph();
+        setOutput(
+          `Lineage for <code>${entityId}</code> (${direction}, depth ${depth}): ${sub.entities.length} entities, ${sub.relationships.length} relationships.`
+        );
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    });
+
+    document.getElementById("cycle-btn").addEventListener("click", async () => {
+      const cycle = document.getElementById("cycle-select").value;
+      try {
+        const sub = await apiFetch(`/cycles/${encodeURIComponent(cycle)}`);
+        currentCycleFilter = cycle;
+        currentView = {
+          entities: sub.entities,
+          relationships: sub.relationships,
+          highlightNodes: new Set(),
+          highlightEdges: new Set(),
+        };
+        renderGraph();
+        setOutput(
+          `Cycle <code>${cycle}</code>: ${sub.entities.length} entities, ${sub.relationships.length} relationships.`
+        );
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    });
+
+    document.getElementById("add-entity-btn").addEventListener("click", async () => {
+      const payload = {
+        id: document.getElementById("new-id").value,
+        greek_name: document.getElementById("new-greek").value,
+        anglicized_name: document.getElementById("new-name").value,
+        category: document.getElementById("new-cat").value,
+      };
+      try {
+        const created = await apiFetch("/entities", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        document.getElementById("new-id").value = "";
+        document.getElementById("new-greek").value = "";
+        document.getElementById("new-name").value = "";
+        await loadFullGraph();
+        setOutput(`Created entity <strong>${created.anglicized_name}</strong> (<code>${created.id}</code>).`);
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    });
+
+    document.getElementById("add-rel-btn").addEventListener("click", async () => {
+      const payload = {
+        source_id: document.getElementById("rel-src").value,
+        target_id: document.getElementById("rel-dst").value,
+        relation_type: document.getElementById("rel-type").value,
+      };
+      try {
+        await apiFetch("/relationships", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        await loadFullGraph();
+        setOutput(`Created relationship <code>${payload.source_id}</code> &rarr; <code>${payload.target_id}</code> (${payload.relation_type}).`);
+      } catch (err) {
+        setOutput(err.message, true);
+      }
+    });
+
+    document.getElementById("export-dot-btn").addEventListener("click", async () => {
+      const query = currentCycleFilter ? `?cycle=${encodeURIComponent(currentCycleFilter)}` : "";
+      const dot = await apiFetch(`/export/dot${query}`);
+      const escaped = dot.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      setOutput(`<strong>Graphviz DOT Export:</strong><pre class="export-preview">${escaped}</pre>`);
+    });
+
+    document.getElementById("export-jgf-btn").addEventListener("click", async () => {
+      const query = currentCycleFilter ? `?cycle=${encodeURIComponent(currentCycleFilter)}` : "";
+      const jgf = await apiFetch(`/export/jgf${query}`);
+      const escaped = JSON.stringify(jgf, null, 2).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      setOutput(`<strong>JGF Export:</strong><pre class="export-preview">${escaped}</pre>`);
+    });
+
+    loadFullGraph().catch(err => setOutput(err.message, true));
+  </script>
+</body>
+</html>
