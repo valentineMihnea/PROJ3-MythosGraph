@@ -1,57 +1,63 @@
 # MythosGraph
 
-**Hellenic Kinship & Mythological Relationship Engine**
+In-memory directed graph engine and REST prototype for querying Greek mythology genealogies and relationships.
 
-MythosGraph is an in-memory directed graph engine and REST API designed to model, traverse, and export complex genealogical and relational webs from Ancient Greek mythology (Hesiodic Theogony, Homeric epics, and classical cycles).
+See [docs/design.md](docs/design.md) for the minimal system architecture, diagrams, and endpoint overview.
 
-## Key Features (Planned & Implemented)
+## Setup
 
-- **Domain Modeling (FR-1, FR-2):** Typed mythological entities (`Primordial`, `Titan`, `Olympian`, `Demigod`, `Mortal`, `Creature`) and directed semantic relationships (`PARENT_OF`, `CHILD_OF`, `SPOUSE_OF`, `CONSORT_OF`, `SIBLING_OF`, `SLAYER_OF`, `PATRON_OF`, `ALLIED_WITH`).
-- **In-Memory Directed Graph Engine:** Adjacency-list representation with strict validation and CRUD operations.
-- **Kinship Pathfinding & Lineage Extraction (FR-3, FR-4, FR-5):** Shortest-path kinship queries (BFS / Dijkstra), cycle-safe ancestor/descendant subgraph extraction, and mythological cycle filtering *(upcoming)*.
-- **Serialization & Visual Export (FR-6):** JSON Graph Format (JGF), Graphviz DOT, and SVG export *(upcoming)*.
-- **OpenAPI REST Service:** FastAPI interface with Swagger UI *(upcoming)*.
-
-## Tech Stack & Engineering Toolchain
-
-- **Language & Validation:** Python 3.12+, Pydantic v2
-- **Dependency Management:** Poetry (`poetry.lock`)
-- **Quality & Static Analysis:** Ruff, Black, Mypy (`--strict`), pre-commit
-- **Testing:** pytest, pytest-cov (branch coverage), Hypothesis *(upcoming)*
-- **CI/CD & Packaging:** GitHub Actions, Docker *(upcoming)*
-
-## Local Setup
+Requires Python 3.12+ and [Poetry](https://python-poetry.org/).
 
 ```bash
-# Install dependencies into a local virtual environment
 poetry install
+```
 
-# Run quality checks
+## Running the Prototype
+
+The API loads a seed dataset of 20 Greek mythological figures and 31 relationships on startup:
+
+```bash
+poetry run uvicorn mythos_graph.api.app:app --reload
+```
+
+Interactive OpenAPI docs are available at `http://127.0.0.1:8000/docs`.
+
+### Example Queries
+
+```bash
+# Shortest kinship path between Heracles and Minos (BFS)
+curl "http://127.0.0.1:8000/kinship/path?source_id=heracles&target_id=minos"
+
+# Zeus's descendants up to depth 2
+curl "http://127.0.0.1:8000/entities/zeus/lineage?direction=descendants&depth=2"
+
+# Trojan War subgraph
+curl "http://127.0.0.1:8000/cycles/TROJAN_WAR"
+
+# Export graph in Graphviz DOT or JSON Graph Format (JGF)
+curl "http://127.0.0.1:8000/export/dot?cycle=TROJAN_WAR"
+curl "http://127.0.0.1:8000/export/jgf?cycle=TITANOMACHY"
+```
+
+## Quality Checks & Tests
+
+```bash
 poetry run ruff check src tests
 poetry run black --check src tests
 poetry run mypy src tests
-
-# Run test suite with branch coverage
 poetry run pytest --cov=src/mythos_graph --cov-branch --cov-report=term-missing
 ```
 
-## Project Structure
+## Project Layout
 
 ```text
 PROJ3-MythosGraph/
-├── .github/            # CI workflows and PR templates
-├── .vscode/            # Shared IDE workspace settings
+├── docs/design.md           # Minimal architecture and Mermaid diagrams
 ├── src/mythos_graph/
-│   ├── domain/         # Entities, relationships, and mythological enums
-│   └── engine/         # In-memory graph core and domain exceptions
-└── tests/              # Unit and property-based test suites
+│   ├── domain/              # Entity, Relationship, enums
+│   ├── engine/              # MythosGraph CRUD, BFS/Dijkstra, lineage, cycle filter
+│   ├── data/                # Hellenic seed JSON and loader
+│   ├── export/              # JGF and Graphviz DOT serializers
+│   └── api/                 # FastAPI app and response schemas
+└── tests/                   # Unit, Hypothesis property, and API integration tests
 ```
-
-## Incremental Roadmap
-
-- [x] **Milestone 1:** Project foundation, Poetry lockfile, strict domain models, in-memory `MythosGraph` CRUD, unit tests, and CI pipeline.
-- [ ] **Milestone 2:** BFS/Dijkstra kinship pathfinding, cycle-safe lineage extraction, cycle filtering, and Hypothesis property tests.
-- [ ] **Milestone 3:** Canonical Greek mythology seed dataset ingestion & graph consistency validator.
-- [ ] **Milestone 4:** JGF, Graphviz DOT, and SVG exporters.
-- [ ] **Milestone 5:** FastAPI REST layer with Swagger UI and MkDocs documentation.
-- [ ] **Milestone 6:** Performance benchmarks, memory profiling (`tracemalloc`), security scanning (`Bandit`/`Trivy`), and multi-stage Docker packaging.
